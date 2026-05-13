@@ -35,7 +35,6 @@ router.put("/:budgetId", BudgetController.update);
 router.delete("/:budgetId", BudgetController.delete);
 
 /**Roues for expenses */
-router.get("/:budgetId/expenses", ExpensesController.getAll);
 
 router.post(
   "/:budgetId/expenses",
