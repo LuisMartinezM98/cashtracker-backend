@@ -1,8 +1,9 @@
-import express from 'express'
+import express, { Application } from 'express'
 import colors from 'colors'
 import morgan from 'morgan'
 import { db } from './config/db'
 import budgetRouter from './routes/budgetRouter';
+import authRouter from './routes/authRouter';
 
 
 async function connectDB() {
@@ -17,9 +18,10 @@ async function connectDB() {
 
 connectDB();
 
-const app = express();
+const app: Application = express();
 app.use(morgan('dev'));
 app.use(express.json());
 app.use('/api/budgets', budgetRouter);
+app.use('/api/auth', authRouter);
 
 export default app;
