@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import Budget from '../models/Budget';
+import Expense from '../models/Expense';
 
 
 export class BudgetController {
@@ -12,11 +13,14 @@ export class BudgetController {
             });
             res.json(budgets);
         } catch (error) {
-            res.status(500).json({ message: 'Failed to fetch budgets' });
+            res.status(500).json({ error: 'Failed to fetch budgets' });
         }
     }
     static getById = async (req: Request, res: Response) => {
-        res.json(req.budget);
+        const budget = await Budget.findByPk(req.budget.id, {
+            include: [Expense]
+        });
+        res.json(budget);
     }
     static create = async (req: Request, res: Response) => {
         try {
@@ -24,7 +28,7 @@ export class BudgetController {
             await budget.save();
             res.status(201).json({ message: 'Budget created successfully' });
         } catch (error) {
-            res.status(500).json({ message: 'Failed to create budget' });
+            res.status(500).json({ error: 'Failed to create budget' });
         }
     }
     static update = async (req: Request, res: Response) => {
@@ -33,7 +37,7 @@ export class BudgetController {
             await req.budget.update({ name, amount });
             res.json({ message: 'Budget updated successfully' });
         } catch (error) {
-            res.status(500).json({ message: 'Failed to update budget' });
+            res.status(500).json({ error: 'Failed to update budget' });
         }
     }
     static delete = async (req: Request, res: Response) => {
@@ -41,7 +45,7 @@ export class BudgetController {
             await req.budget.destroy();
             res.json({ message: 'Budget deleted successfully' });
         } catch (error) {
-            res.status(500).json({ message: 'Failed to delete budget' });
+            res.status(500).json({ error: 'Failed to delete budget' });
         }
     }
 
