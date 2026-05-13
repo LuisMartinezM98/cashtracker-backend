@@ -6,6 +6,7 @@
   "author": "Luis Alberto Martinez Manzano",
   "type": "commonjs",
   "main": "index.js",
+  "packageManager": "pnpm@10.17.1",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "dev:api": "nodemon src/index.ts --api",
@@ -13,17 +14,23 @@
     "start": "node ./dist/index.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "colors": "^1.4.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.1",
+    "express-validator": "^7.3.2",
     "morgan": "^1.10.1",
+    "nodemailer": "^8.0.7",
     "pg": "^8.20.0",
     "pg-hstore": "^2.3.4",
     "sequelize-typescript": "^2.1.6"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
     "@types/morgan": "^1.9.10",
+    "@types/nodemailer": "^8.0.0",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
