@@ -1,2 +1,3 @@
-ignoredBuiltDependencies:
-  - bcrypt
+allowBuilds:
+  bcrypt: true
+  unrs-resolver: true
