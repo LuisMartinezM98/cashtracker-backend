@@ -12,13 +12,19 @@ export class AuthController {
     const userExist = await User.findOne({ where: { email } });
     if (userExist) {
       const error = new Error("User already exists");
-      return res.status(400).json({ error: error.message });
+      return res.status(409).json({ error: error.message });
     }
     try {
-      const user = new User(req.body);
+      const user = await User.create(req.body);
       user.password = await hashPassword(password);
-      user.token = generateToken();
-      AuthEmail.sendConfirmation({
+      const token = generateToken();
+
+      if (process.env.NODE_ENV !== "production") {
+        globalThis.cashTrackrConfirmationToken = token;
+      }
+
+      user.token = token;
+      await AuthEmail.sendConfirmation({
         name: user.name,
         email: user.email,
         token: user.token,
