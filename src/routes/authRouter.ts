@@ -46,7 +46,6 @@ router.post(
 router.post(
   "/validate-token",
   body("token")
-    .notEmpty()
     .isLength({ min: 6, max: 6 })
     .withMessage("Invalid token"),
   handleInputErrors,
@@ -56,7 +55,6 @@ router.post(
 router.post(
   "/reset-password/:token",
   param("token")
-    .notEmpty()
     .isLength({ min: 6, max: 6 })
     .withMessage("Invalid token"),
   body("password")
