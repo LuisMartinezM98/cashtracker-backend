@@ -43,7 +43,7 @@ jobs:
       - name: Cachear dependencias de pnpm
         uses: actions/cache@v4
         with:
-          path: ~/.local/share/pnpm/store # Ruta fija del store en Linux
+          path: ~/.local/share/pnpm/store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
@@ -54,8 +54,15 @@ jobs:
       - name: Validar tipos de TypeScript
         run: pnpm build
 
+      - name: Esperar a que PostgreSQL esté listo
+        run: |
+          until pg_isready -h localhost -p 5432 -U test_user; do
+            echo "Esperando PostgreSQL..."
+            sleep 2
+          done
+
       - name: Ejecutar pruebas (Jest)
-        run: pnpm test -- --passWithNoTests
+        run: pnpm run test -- --passWithNoTests
         env:
           NODE_ENV: test
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/cashtrackr_test
