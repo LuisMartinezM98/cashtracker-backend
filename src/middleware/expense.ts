@@ -65,3 +65,17 @@ export const validateExpenseExist = async (
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const belongsToBudget = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  
+  
+  if(req.budget.id !== req.expense.budgetId){
+    const error = new Error("Unauthorized");
+    return res.status(401).json({ error: error.message });
+  }
+  next();
+};
