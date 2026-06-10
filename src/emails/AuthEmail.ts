@@ -16,11 +16,11 @@ export class AuthEmail {
                 <h1>Hola ${user.name}</h1>
                 <p>Gracias por registrarte en CashTrackr.</p>
                 <p>Para confirmar tu cuenta, haz clic en el siguiente enlace:</p>
-                <a href="#">Confirmar cuenta</a>
+                <a href="${process.env.FRONTEND_URL}/auth/confirm-account">Confirmar cuenta</a>
                 <p>e ingresa el código: <b>${user.token}</b></p>
                 `,
     });
-    console.log('Email enviado', email.messageId);
+    console.log("Email enviado", email.messageId);
   };
   static sendPasswordResetToken = async (user: EmailType) => {
     const email = await transport.sendMail({
@@ -30,10 +30,10 @@ export class AuthEmail {
       html: `
                 <h1>Hola ${user.name}</h1>
                 <p>Para restablecer tu password, haz clic en el siguiente enlace:</p>
-                <a href="#">Restablece password</a>
+                <a href="${process.env.FRONTEND_URL}/auth/new-password">Restablece password</a>
                 <p>e ingresa el código: <b>${user.token}</b></p>
                 `,
     });
-    console.log('Email enviado', email.messageId);
+    console.log("Email enviado", email.messageId);
   };
 }
