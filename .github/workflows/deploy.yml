@@ -14,8 +14,8 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: root
           POSTGRES_DB: cashtrackr_test
         ports:
           - 5432:5432
@@ -56,16 +56,16 @@ jobs:
 
       - name: Esperar a que PostgreSQL esté listo
         run: |
-          until pg_isready -h localhost -p 5432 -U test_user; do
+          until pg_isready -h localhost -p 5432 -U root; do
             echo "Esperando PostgreSQL..."
             sleep 2
           done
 
       - name: Ejecutar pruebas (Jest)
-        run: pnpm run test -- --passWithNoTests
+        run: pnpm run test
         env:
           NODE_ENV: test
-          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/cashtrackr_test
+          DATABASE_URL: postgresql://root:root@localhost:5432/cashtrackr_test
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           NODEMAILER_HOST: ${{ secrets.NODEMAILER_HOST }}
           NODEMAILER_PORT: ${{ secrets.NODEMAILER_PORT }}
