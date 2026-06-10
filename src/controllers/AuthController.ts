@@ -89,7 +89,7 @@ export class AuthController {
       email: user.email,
       token: user.token,
     });
-    res.json("Password reset token sent to email");
+    res.status(200).json({ message: "Password reset token sent to email" });
   };
   static validateToken = async (req: Request, res: Response) => {
     const { token } = req.body;
@@ -98,7 +98,7 @@ export class AuthController {
       const error = new Error("Invalid token");
       return res.status(404).json({ error: error.message });
     }
-    res.json("Valid token");
+    res.json({ message: "Valid token" });
   };
   static resetPasswordWithToken = async (req: Request, res: Response) => {
     const { token } = req.params;
@@ -112,7 +112,7 @@ export class AuthController {
     user.password = await hashPassword(password);
     user.token = null;
     await user.save();
-    res.json("Password reset successfully");
+    res.json({ message: "Password reset successfully" });
   };
 
   static getUser = async (req: Request, res: Response) => {
@@ -131,7 +131,7 @@ export class AuthController {
     try {
       user.password = await hashPassword(password);
       await user.save();
-      res.json("Password updated successfully");
+      res.json({ message: "Password updated successfully" });
     } catch (error) {
       res.status(500).json({ error: "Failed to update password" });
     }
@@ -147,10 +147,27 @@ export class AuthController {
         const error = new Error("Invalid password");
         return res.status(401).json({ error: error.message });
       } else {
-        res.json("Password is valid");
+        res.json({ message: "Password is valid" });
       }
     } catch (error) {
       res.status(500).json({ error: "Failed to check password" });
+    }
+  };
+
+  static updateUserInfo = async (req: Request, res: Response) => {
+    const { name, email } = req.body;
+    try {
+      const isEmailUsed = await User.findOne({ where: { email } });
+      if (isEmailUsed && email !== req.user.email) {
+        const error = new Error("Email is already in use");
+        return res.status(409).json({ error: error.message });
+      }
+      await req.user.update({ name, email });
+      return res.status(200).json({
+        message: "Profile updated successfully",
+      });
+    } catch (error) {
+      return res.status(500).json({ error: "Internal server error" });
     }
   };
 }
