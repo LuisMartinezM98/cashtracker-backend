@@ -2,16 +2,16 @@ import { exit } from "node:process";
 import { db } from "../config/db";
 
 const clearData = async () => {
-    try{
-        await db.sync({force: true})
+    try {
+        await db.sync({ force: true });
         console.log('Database cleared successfully');
         exit(0);
-    }catch(error){
-        // console.log(error)
-        exit(1)
+    } catch(error) {
+        console.log(error);
+        exit(1);
     }
 };
-if (process.argv[2] === "clear") {
-  clearData();
+
+if (process.argv[2] === "--clear") {
+    clearData();
 }
-clearData();
