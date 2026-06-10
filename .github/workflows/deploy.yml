@@ -1,0 +1,64 @@
+name: CashTrackr TypeScript CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # -----------------------------------------------------------------
+  # TRABAJO 1: CI (Instalación, Compilación y Pruebas)
+  # -----------------------------------------------------------------
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código fuente
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '11.1.3'
+
+      - name: Obtener directorio de caché de pnpm
+        id: pnpm-cache
+        run: echo "dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Cachear dependencias de pnpm
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.dir }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Validar tipos de TypeScript
+        run: pnpm build
+
+      - name: Ejecutar pruebas (Jest)
+        run: pnpm test -- --passWithNoTests
+        env:
+          NODE_ENV: test
+
+  # -----------------------------------------------------------------
+  # TRABAJO 2: CD (Despliegue en Render)
+  # -----------------------------------------------------------------
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test # Solo se ejecuta si el job 'test' pasa
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Triggerear deploy en Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
