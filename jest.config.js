@@ -8,6 +8,12 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
+  rootDir: ".",
+  testMatch: [
+    "<rootDir>/src/tests/**/*.test.ts",
+    "<rootDir>/src/tests/**/*.spec.ts"
+  ],
+  moduleFileExtensions: ["ts", "js", "json"],
   openHandlesTimeout: 10 * 1000,
   testTimeout: 10 * 1000,
 };
