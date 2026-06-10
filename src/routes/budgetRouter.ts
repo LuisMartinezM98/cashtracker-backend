@@ -13,6 +13,7 @@ import {
   validateExpenseId,
   validateExpenseInput,
   validateExpenseExist,
+  belongsToBudget,
 } from "../middleware/expense";
 import { authenticate } from "../middleware/auth";
 
@@ -25,6 +26,7 @@ router.param("budgetId", validateBudgetExist);
 router.param("budgetId", hasAcces);
 router.param("expenseId", validateExpenseId);
 router.param("expenseId", validateExpenseExist);
+router.param("expenseId", belongsToBudget);
 
 /**Roues for budgets */
 
